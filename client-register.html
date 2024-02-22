@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Registration</title>
     <style>
-        body {
+         body {
             font-family: 'Arial', sans-serif;
             background-color: #f8f8f8;
             margin: 0;
@@ -70,19 +70,55 @@
 
             <label for="email">Email:</label>
             <input type="email" id="email" required><br>
-
+            
             <label for="password">Password:</label>
             <input type="password" id="password" required><br>
 
-            <button type="button" onclick="register()">Register</button>
+            <button type="button" id="registerBtn" onclick="register()">Register</button>
         </form>
     </div>
 
     <script>
+        function isValidUsername(username) {
+            // Use a regular expression to allow only alphanumeric characters and underscores
+            return /^[a-zA-Z0-9_]+$/.test(username);
+        }
+
+        function isValidPassword(password) {
+            // Use a regular expression to allow only alphanumeric characters
+            return /^[a-zA-Z0-9]+$/.test(password);
+        }
+
         function register() {
-            var username = document.getElementById("username").value;
-            var email = document.getElementById("email").value;
-            var password = document.getElementById("password").value;
+            var username = document.getElementById("username").value.trim();
+            var email = document.getElementById("email").value.trim();
+            var password = document.getElementById("password").value.trim();
+
+            // Check if any of the fields are empty
+            if (username === "" || email === "" || password === "") {
+                alert("Please enter all credentials.");
+                return; // Stop the function from proceeding
+            }
+
+            // Check if the username and password meet the criteria
+            if (!isValidUsername(username)) {
+                alert("Invalid username. Use only letters, numbers, and underscores.");
+                return;
+            }
+
+            if (!isValidPassword(password)) {
+                alert("Invalid password. Use only letters and numbers.");
+                return;
+            }
+
+            // Retrieve existing users or initialize an empty array
+            var existingUsers = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+
+            // Check if the username is already taken
+            if (existingUsers.some(user => user.username === username)) {
+                alert("Username is already taken. Please choose another one.");
+                return;
+            }
 
             var user = {
                 username: username,
@@ -90,8 +126,11 @@
                 password: password
             };
 
-            // Save user details in local storage
-            localStorage.setItem("registeredUser", JSON.stringify(user));
+            // Add the new user to the array
+            existingUsers.push(user);
+
+            // Save the updated user array in local storage
+            localStorage.setItem("registeredUsers", JSON.stringify(existingUsers));
 
             // Redirect to welcome page
             window.location.href = "welcome.html";

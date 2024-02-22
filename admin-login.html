@@ -46,12 +46,20 @@
 
     <script>
         // Retrieve and display registered user details from local storage
-        var registeredUser = JSON.parse(localStorage.getItem("registeredUser"));
+        var registeredUsers = JSON.parse(localStorage.getItem("registeredUsers"));
 
-        if (registeredUser) {
+        if (registeredUsers && registeredUsers.length > 0) {
             var clientDetailsDiv = document.getElementById("clientDetails");
-            clientDetailsDiv.innerHTML = "<strong>Username:</strong> " + registeredUser.username + "<br>" +
-                "<strong>Email:</strong> " + registeredUser.email;
+            clientDetailsDiv.innerHTML = "<strong>Registered Users:</strong><br>";
+
+            registeredUsers.forEach(function (user, index) {
+                clientDetailsDiv.innerHTML += "<div><strong>User " + (index + 1) + ":</strong><br>" +
+                    "Username: " + user.username + "<br>" +
+                    "Email: " + user.email + "<br></div>";
+            });
+        } else {
+            var clientDetailsDiv = document.getElementById("clientDetails");
+            clientDetailsDiv.innerHTML = "<p>No registered users yet.</p>";
         }
     </script>
 
